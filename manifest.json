@@ -5,18 +5,18 @@
   "description": "This extension sets the default ebay search to home country only.",
   "version": "1.0",
 
-  "browser_action": {
-    "default_icon": "icon.png",
-    "default_popup": "popup.html",
-    "default_title": "Ebay home only"
-  },
   "background": {
     "scripts": ["eventPage.js"],
     "persistent": false
   },
+    "options_ui": {
+    "page": "options.html",
+    "chrome_style": true
+  },
   "permissions": [
     "activeTab",
     "tabs", 
+    "storage",
     "http://*/",
     "https://*/",
     "https://ajax.googleapis.com/"

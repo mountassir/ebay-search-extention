@@ -1,22 +1,46 @@
 
-var log = false;
+var shouldLog = true;
 
-if(log === true) console.log("Event page loaded.");
+var OVERRIDE_OPTIONS =
+{
+	ALWAYS:   "alwaysRadioButton",
+	NEW_ONLY: "newOnlyRadioButton",
+	DISABLE:  "disableRadioButton"
+};
+
+var MESSAGE_TYPES =
+{
+	DEBUG: 0,
+	WARN:  1,
+	ERROR: 2
+};
+
+log("Event page loaded.", MESSAGE_TYPES.DEBUG);
 
 chrome.runtime.onInstalled.addListener(onInit);
 
+initOptions();
 registerEvents();
 
 function onInit()
 {
-	if(log === true) console.log("onInstall event received.");
+	log("onInstall event received.", MESSAGE_TYPES.DEBUG);
 
 	//registerEvents();
 }
 
+function initOptions() 
+{
+	chrome.storage.sync.get({
+		overrideOption: OVERRIDE_OPTIONS.NEW_ONLY,
+		}, function(items) {
+			log("Override option set to: " + items.overrideOption);
+	});
+}
+
 function registerEvents()
 {
-	if(log === true) console.log("Register onUpdated event.");
+	log("Register onUpdated event.", MESSAGE_TYPES.DEBUG);
 
 	chrome.tabs.onUpdated.addListener(handleTabUpdate);
 }
@@ -27,84 +51,95 @@ function handleTabUpdate(id, changeInfo, tab)
 	var status = changeInfo.status;
 	var newUrl = changeInfo.url;
 
-	if(log === true) 
-	{
-		console.log("onUpdated event received:");
-		console.log("tabId: ", tabId);
-		console.log("status: ", status);
-		console.log("newUrl: ", newUrl);
-		console.log("tabUrl: ", tab.url);
-	}
+	log("onUpdated event received:", MESSAGE_TYPES.DEBUG);
+	log("tabId: " + tabId, MESSAGE_TYPES.DEBUG);
+	log("status: " + status, MESSAGE_TYPES.DEBUG);
+	log("newUrl: " + newUrl, MESSAGE_TYPES.DEBUG);
+	log("tabUrl: " + tab.url, MESSAGE_TYPES.DEBUG);
 
 	if(newUrl !== undefined)
 	{
 		if(tabId !== undefined)
 		{
-			processNewUrl(tabId, newUrl);
+			chrome.storage.sync.get("overrideOption", function(items) {
+				var overrideOption = items.overrideOption;
+				processNewUrl(tabId, newUrl, overrideOption);
+			});
 		}
 		else
 		{
-			if(log === true) console.error("Invalid taId:", tabId);
+			log("Invalid taId:" + tabId, MESSAGE_TYPES.ERROR);
 		}
 	}
 	else
 	{
-		if(log === true) console.log("url has not changed, nothing to do.");
+		log("url has not changed, nothing to do.", MESSAGE_TYPES.DEBUG);
 	}
 }
 
-function processNewUrl(tabId, url)
+function processNewUrl(tabId, url, overrideOption)
 {
-	if(shouldProcessEbayUrl(url))
+	if(shouldProcessEbayUrl(url, overrideOption))
 	{
 		stopLoading(tabId);
 
-		var homeOnlyUrl = addHomeOnlyToEbayUrl(url);
+		var noLocationUrl = clearLocationInUrl(url);
+		var homeOnlyUrl = addHomeOnlyToEbayUrl(noLocationUrl);
 
-		if(log === true) 
-		{
-			console.log("Replacing: ", url);
-			console.log("With: ", homeOnlyUrl);
-		}
+		log("Replacing: " + url, MESSAGE_TYPES.DEBUG);
+		log("With: " + homeOnlyUrl, MESSAGE_TYPES.DEBUG);
+
 		setTabUrl(tabId, homeOnlyUrl);
 	}
 	else
 	{
-		if(log === true) console.log("Not processing ebay url: ", url);
+		log("Not processing ebay url: " + url, MESSAGE_TYPES.DEBUG);
 	}
 }
 
-function shouldProcessEbayUrl(url)
+function shouldProcessEbayUrl(url, overrideOption)
 {
-	if(isEbayUrl(url))
+	if(overrideOption === OVERRIDE_OPTIONS.ALWAYS || 
+	   overrideOption === OVERRIDE_OPTIONS.NEW_ONLY)
 	{
-		if(log === true) console.log("Got an ebay url: ", url);
+		log("Location override is enabled: " + overrideOption, MESSAGE_TYPES.DEBUG);
 	}
 	else
 	{
-		if(log === true) console.log("Not an ebay url, nothing to do: ", url);
+		log("Location override is disabled: " + overrideOption, MESSAGE_TYPES.DEBUG);
+
+		return false;
+	}
+
+	if(isEbayUrl(url))
+	{
+		log("Got an ebay url: " + url, MESSAGE_TYPES.DEBUG);
+	}
+	else
+	{
+		log("Not an ebay url, nothing to do: " + url, MESSAGE_TYPES.DEBUG);
 
 		return false;
 	}
 
 	if(isSearchUrl(url))
 	{
-		if(log === true) console.log("Ebay url is a search: ", url);
+		log("Ebay url is a search: " + url, MESSAGE_TYPES.DEBUG);
 	}
 	else
 	{
-		if(log === true) console.log("Ebay url is not a search, nothing to do: ", url);
+		log("Ebay url is not a search, nothing to do: " + url, MESSAGE_TYPES.DEBUG);
 
 		return false;
 	}
 
-	if(!isAlreadyProcessed(url))
+	if(!isAlreadyProcessed(url, overrideOption))
 	{
-		if(log === true) console.log("Location not set yet: ", url);
+		log("Location not set yet: " + url, MESSAGE_TYPES.DEBUG);
 	}
 	else
 	{
-		if(log === true) console.log("Location already set, nothing to do: ", url);
+		log("Location already set, nothing to do: " + url, MESSAGE_TYPES.DEBUG);
 
 		return false;
 	}
@@ -114,7 +149,7 @@ function shouldProcessEbayUrl(url)
 
 function stopLoading(tabId) 
 {
-	if(log === true) console.log("Stopping tabId: ", tabId, " from loading.");
+	log("Stopping tabId: " + tabId + " from loading.", MESSAGE_TYPES.DEBUG);
 
 	var script = 
 	{
@@ -135,8 +170,13 @@ function isSearchUrl(url)
 	return url.indexOf(getEbaySearchIdentifier()) !== -1;
 }
 
-function isAlreadyProcessed(url)
+function isAlreadyProcessed(url, overrideOption)
 {
+	if(overrideOption === OVERRIDE_OPTIONS.ALWAYS)
+	{
+		return url.indexOf(getEbayHomeLocationIdentifier()) !== -1;
+	}
+	
 	return url.indexOf(getEbayLocationIdentifier()) !== -1;
 }
 
@@ -155,6 +195,27 @@ function getEbayLocationIdentifier()
 	return "&LH_PrefLoc=";
 }
 
+function getEbayHomeLocationIdentifier()
+{
+	return "&LH_PrefLoc=1";
+}
+
+function clearLocationInUrl(url)
+{
+	var locationtParameterAt = url.indexOf(getEbayLocationIdentifier());
+
+	while(locationtParameterAt !== -1)
+	{
+		var nextParameterAt = url.indexOf("&", locationtParameterAt + 1);
+
+		url = url.replace(url.substring(locationtParameterAt, nextParameterAt), "");
+
+		locationtParameterAt = url.indexOf(getEbayLocationIdentifier());
+	}
+
+	return url;
+}
+
 function addHomeOnlyToEbayUrl(url)
 {
 	return url + getEbayLocationIdentifier() + "1";
@@ -165,4 +226,28 @@ function setTabUrl(tabId, url)
 	var updateProperties = {url: url};
 
 	chrome.tabs.update(tabId, updateProperties);
+}
+
+function log(message, messageType)
+{
+	if(shouldLog === true) 
+	{
+		switch(messageType)
+		{
+			case MESSAGE_TYPES.DEBUG:
+			{
+				console.log(message);
+				break;
+			}
+			case MESSAGE_TYPES.ERROR:
+			{
+				console.error(message);
+				break;
+			}
+			default:
+			{
+				console.log(message);
+			}
+		}
+	}
 }

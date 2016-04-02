@@ -6,19 +6,14 @@
   "version": "1.0",
 
   "background": {
-    "scripts": ["eventPage.js"],
+    "scripts": ["js/background.js"],
     "persistent": false
   },
-    "options_ui": {
-    "page": "options.html",
+  "options_ui": {
+    "page": "options/options.html",
     "chrome_style": true
   },
-  "permissions": [
-    "activeTab",
-    "tabs", 
-    "storage",
-    "http://*/",
-    "https://*/",
-    "https://ajax.googleapis.com/"
-  ]
+  "permissions": ["activeTab", "tabs", "storage"],
+  "incognito": "split",
+  "minimum_chrome_version" : "22"
 }

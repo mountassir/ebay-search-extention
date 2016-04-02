@@ -75,7 +75,7 @@ function setWidgetChecked(widgetId, checked)
 
 	if(widget !== undefined)
 	{
-		widget.checked = (checked === true || checked === false) ? checked : false;
+		widget.checked = (typeof(checked) === "boolean") ? checked : false;
 	}
 }
 
@@ -87,6 +87,6 @@ function isOverrideOptionValid(option)
 }
 
 document.addEventListener('DOMContentLoaded', initOptions);
-document.getElementById(OVERRIDE_OPTIONS.ALWAYS).addEventListener('click', saveOptions);
+document.getElementById(OVERRIDE_OPTIONS.ALWAYS).addEventListener('click',   saveOptions);
 document.getElementById(OVERRIDE_OPTIONS.NEW_ONLY).addEventListener('click', saveOptions);
-document.getElementById(OVERRIDE_OPTIONS.DISABLE).addEventListener('click', saveOptions);
+document.getElementById(OVERRIDE_OPTIONS.DISABLE).addEventListener('click',  saveOptions);

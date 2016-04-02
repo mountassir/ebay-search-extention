@@ -1,0 +1,46 @@
+<html>
+<head>
+	<title>Ebay home only</title>
+	<style>
+		body: { padding: 10px; }
+	</style>
+</head>
+<body>
+	<h1>Settings</h1>
+	<form>
+		<input type="radio" id="alwaysRadioButton" name="type" title="This will overide both the Ebay and user selected locations."> Override all searches.
+		<br>
+		<input type="radio" id="newOnlyRadioButton" name="type" title="This will override the Ebay selected location only."> Override new searches only.<br>
+		<input type="radio" id="disableRadioButton" name="type" title="Turn this thing off."> Disable
+	</form>
+
+	<h1>Permissions</h1>
+	<p>    
+	<b>activeTab:</b> Get notification when a new (ebay) search is applied.<br>
+    <b>tabs:</b> Apply a new (ebay) search with the user's chosen override.<br>
+    <b>storage:</b> Needed to save user option.<br>
+    </p>
+
+	<h1>Donate</h1>
+	This extension is and will always be free to install and open source, with no ads and no intrusion of user date. 
+	<br><br>
+	I use ebay a lot and I was getting really furstrated with how they force item from all over the word in my search results, items that I will end up filtering every single time. As ebay has no intention of giving the user the option to set their location defaults, I wrote a very basic version of this for myself to begin with, now that I see how useful it has been for me and how much time it has saved me, I decided to polish it a bit and share it with the world so that it might help another ebay adict out there :P
+	<br><br>
+	If you find this extension helpful enough to deserve a price tag, please feel free to send me a donation using the link below. Just keep in mind that Paypal takes 3% + 20p T-T 
+	
+	<h1>Share</h1>
+	<a 
+	  href="https://www.facebook.com/sharer/sharer.php?u=https://chrome.google.com/webstore/detail/checker-plus-for-gmail/oeopbcgkkoapgobdbedcemjljbihmemj" 
+	  target="_blank">
+	  Share on Facebook
+	</a>
+	&nbsp;&nbsp;
+	<a href="https://www.reddit.com/submit?url=https://chrome.google.com/webstore/detail/checker-plus-for-gmail/oeopbcgkkoapgobdbedcemjljbihmemj"
+	  target="_blank">
+	  Share on Reddit
+	</a>
+
+	<div id="status"></div>
+	<script src="options.js"></script>
+</body>
+</html>

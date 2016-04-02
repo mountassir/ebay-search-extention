@@ -15,6 +15,9 @@ var MESSAGE_TYPES =
 	ERROR: 2
 };
 
+var HOME_LOCATION_VALUE = "1";
+var SEARCH_OPTIONS_DELIMITER = "&";
+
 log("Event page loaded.", MESSAGE_TYPES.DEBUG);
 
 chrome.runtime.onInstalled.addListener(onInit);
@@ -180,6 +183,34 @@ function isAlreadyProcessed(url, overrideOption)
 	return url.indexOf(getEbayLocationIdentifier()) !== -1;
 }
 
+function clearLocationInUrl(url)
+{
+	var locationtParameterAt = url.indexOf(getEbayLocationIdentifier());
+
+	while(locationtParameterAt !== -1)
+	{
+		var nextParameterAt = url.indexOf(SEARCH_OPTIONS_DELIMITER, locationtParameterAt + 1);
+
+		url = url.replace(url.substring(locationtParameterAt, nextParameterAt), "");
+
+		locationtParameterAt = url.indexOf(getEbayLocationIdentifier());
+	}
+
+	return url;
+}
+
+function addHomeOnlyToEbayUrl(url)
+{
+	return url + getEbayHomeLocationIdentifier();
+}
+
+function setTabUrl(tabId, url)
+{
+	var updateProperties = {url: url};
+
+	chrome.tabs.update(tabId, updateProperties);
+}
+
 function getEbayUrlIdentifier()
 {
 	return "www.ebay.";
@@ -197,35 +228,7 @@ function getEbayLocationIdentifier()
 
 function getEbayHomeLocationIdentifier()
 {
-	return "&LH_PrefLoc=1";
-}
-
-function clearLocationInUrl(url)
-{
-	var locationtParameterAt = url.indexOf(getEbayLocationIdentifier());
-
-	while(locationtParameterAt !== -1)
-	{
-		var nextParameterAt = url.indexOf("&", locationtParameterAt + 1);
-
-		url = url.replace(url.substring(locationtParameterAt, nextParameterAt), "");
-
-		locationtParameterAt = url.indexOf(getEbayLocationIdentifier());
-	}
-
-	return url;
-}
-
-function addHomeOnlyToEbayUrl(url)
-{
-	return url + getEbayLocationIdentifier() + "1";
-}
-
-function setTabUrl(tabId, url)
-{
-	var updateProperties = {url: url};
-
-	chrome.tabs.update(tabId, updateProperties);
+	return getEbayLocationIdentifier() + HOME_LOCATION_VALUE;
 }
 
 function log(message, messageType)

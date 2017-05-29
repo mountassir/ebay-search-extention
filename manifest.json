@@ -4,12 +4,22 @@
   "name": "Ebay home only",
   "description": "This extension sets the default ebay search to home country only.",
   "version": "1.0",
-
+  "icons": {
+            "16":  "icons/main/icon-16.png",
+            "19":  "icons/main/icon-19.png",
+            "24":  "icons/main/icon-24.png",
+            "32":  "icons/main/icon-32.png",
+            "48":  "icons/main/icon-48.png",
+            "128": "icons/main/icon-128.png"
+  },
   "browser_action": {
     "default_icon": {
-            "19": "icons/ebay-hom-search-map-19.png",
-            "24": "icons/ebay-hom-search-map-24.png",
-            "32": "icons/ebay-hom-search-map-32.png"
+            "16":  "icons/main/icon-16.png",
+            "19":  "icons/main/icon-19.png",
+            "24":  "icons/main/icon-24.png",
+            "32":  "icons/main/icon-32.png",
+            "48":  "icons/main/icon-48.png",
+            "128": "icons/main/icon-128.png"
     },
     "default_popup": "options/options.html"
   },

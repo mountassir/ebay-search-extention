@@ -1,23 +1,4 @@
 
-var shouldLog = true;
-
-var OVERRIDE_OPTIONS =
-{
-	ALWAYS:   "alwaysRadioButton",
-	NEW_ONLY: "newOnlyRadioButton",
-	DISABLE:  "disableRadioButton"
-};
-
-var MESSAGE_TYPES =
-{
-	DEBUG: 0,
-	WARN:  1,
-	ERROR: 2
-};
-
-var HOME_LOCATION_VALUE = "1";
-var SEARCH_OPTIONS_DELIMITER = "&";
-
 log("Event page loaded.", MESSAGE_TYPES.DEBUG);
 
 chrome.runtime.onInstalled.addListener(onInit);
@@ -34,10 +15,8 @@ function onInit()
 
 function initOptions() 
 {
-	chrome.storage.sync.get({
-		overrideOption: OVERRIDE_OPTIONS.NEW_ONLY,
-		}, function(items) {
-			log("Override option set to: " + items.overrideOption);
+	chrome.storage.sync.get('overrideOption', function(items) {
+		log("Override option set to: " + items.overrideOption);
 	});
 }
 

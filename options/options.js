@@ -1,12 +1,3 @@
-var OVERRIDE_OPTIONS =
-{
-	ALWAYS:   "alwaysRadioButton",
-	NEW_ONLY: "newOnlyRadioButton",
-	DISABLE:  "disableRadioButton"
-};
-
-var defaultOverride = OVERRIDE_OPTIONS.NEW_ONLY;
-
 function setOverrideOption(overrideOption) 
 {
 	if (overrideOption == undefined || !isOverrideOptionValid(overrideOption)) 
@@ -19,10 +10,8 @@ function setOverrideOption(overrideOption)
 
 function initOptions() 
 {
-	chrome.storage.sync.get({
-		overrideOption: OVERRIDE_OPTIONS.NEW_ONLY,
-		}, function(items) {
-			setOverrideOption(items.overrideOption);
+	chrome.storage.sync.get('overrideOption', function(items) {
+		setOverrideOption(items.overrideOption);
 	});
 }
 
@@ -32,14 +21,10 @@ function saveOptions()
 
 	if(isOverrideOptionValid(overrideOption))
 	{
-		chrome.storage.sync.set({
-			overrideOption: overrideOption,
-		}, function() {
+		chrome.storage.sync.set({ 'overrideOption': overrideOption}, function() {
 			var status = document.getElementById('status');
 			status.textContent = 'Options saved.';
-			setTimeout(function() {
-				status.textContent = '';
-			}, 750);
+			setTimeout(function() { status.textContent = ''; }, 750);
 		});
 	}
 }

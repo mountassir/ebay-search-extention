@@ -24,7 +24,7 @@
     "default_popup": "options/options.html"
   },
   "background": {
-    "scripts": ["constants/constants.js","main/background.js"],
+    "scripts": ["constants/constants.js","main/eventPage.js"],
     "persistent": false
   },
   "options_ui": {

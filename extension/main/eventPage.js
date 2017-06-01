@@ -170,7 +170,11 @@ function clearLocationInUrl(url)
 	{
 		var nextParameterAt = url.indexOf(SEARCH_OPTIONS_DELIMITER, locationtParameterAt + 1);
 
-		url = url.replace(url.substring(locationtParameterAt, nextParameterAt), "");
+		var foundLocationPref = (nextParameterAt === -1) ? 
+			url.substring(locationtParameterAt) :
+			url.substring(locationtParameterAt, nextParameterAt);
+
+		url = url.replace(foundLocationPref, "");
 
 		locationtParameterAt = url.indexOf(getEbayLocationIdentifier());
 	}

@@ -24,20 +24,22 @@ function registerEvents()
 {
 	log("Register onUpdated event.", MESSAGE_TYPES.DEBUG);
 
-	chrome.tabs.onUpdated.addListener(handleTabUpdate);
+	var urlFilter = 
+	{
+		url: [ {hostContains: '.ebay.'}]
+	};
+
+	chrome.webNavigation.onBeforeNavigate.addListener(handleTabUpdate, urlFilter);
 }
 
-function handleTabUpdate(id, changeInfo, tab)
+function handleTabUpdate(event)
 {
-	var tabId = (id !== undefined) ? id : tab.id;
-	var status = changeInfo.status;
-	var newUrl = changeInfo.url;
-
-	log("onUpdated event received:", MESSAGE_TYPES.DEBUG);
+	var tabId = event.tabId;
+	var newUrl = event.url;
+	
+	log("onBeforeNavigate event received:", MESSAGE_TYPES.DEBUG);
 	log("tabId: " + tabId, MESSAGE_TYPES.DEBUG);
-	log("status: " + status, MESSAGE_TYPES.DEBUG);
 	log("newUrl: " + newUrl, MESSAGE_TYPES.DEBUG);
-	log("tabUrl: " + tab.url, MESSAGE_TYPES.DEBUG);
 
 	if(newUrl !== undefined)
 	{

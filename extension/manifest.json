@@ -33,6 +33,7 @@
   },
   "permissions": [
     "activeTab", 
+    "webNavigation",
     "tabs", 
     "storage", 
     "http://*/*",

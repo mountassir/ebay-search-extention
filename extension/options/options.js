@@ -10,7 +10,7 @@ function setOverrideOption(overrideOption)
 
 function initOptions() 
 {
-	chrome.storage.sync.get('overrideOption', function(items) {
+	chrome.storage.sync.get(STORAGE_KEYS.OVERRIDE_OPTION, function(items) {
 		setOverrideOption(items.overrideOption);
 	});
 }
@@ -21,7 +21,10 @@ function saveOptions()
 
 	if(isOverrideOptionValid(overrideOption))
 	{
-		chrome.storage.sync.set({ 'overrideOption': overrideOption}, function() {
+		var optionKey = {};
+		optionKey[STORAGE_KEYS.OVERRIDE_OPTION] = overrideOption;
+		
+		chrome.storage.sync.set(optionKey, function() {
 			var status = document.getElementById('status');
 			status.textContent = 'Options saved.';
 			setTimeout(function() { status.textContent = ''; }, 750);

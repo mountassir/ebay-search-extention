@@ -3,20 +3,26 @@ log("Event page loaded.", MESSAGE_TYPES.DEBUG);
 
 chrome.runtime.onInstalled.addListener(onInit);
 
-initOptions();
-registerEvents();
-
 function onInit()
 {
 	log("onInstall event received.", MESSAGE_TYPES.DEBUG);
 
-	//registerEvents();
+	initOptions();
+	registerEvents();
 }
 
 function initOptions() 
 {
-	chrome.storage.sync.get('overrideOption', function(items) {
-		log("Override option set to: " + items.overrideOption);
+	chrome.storage.sync.get(STORAGE_KEYS.OVERRIDE_OPTION, function(items) {
+		var currentOption = items.overrideOption;
+		var optionToSave = (currentOption !== undefined) ? currentOption : defaultOverride;
+
+		var optionKey = {};
+		optionKey[STORAGE_KEYS.OVERRIDE_OPTION] = optionToSave;
+		
+		chrome.storage.sync.set(optionKey, function() {
+			log("Override option set to: " + optionToSave);
+		});
 	});
 }
 
@@ -45,7 +51,7 @@ function handleTabUpdate(event)
 	{
 		if(tabId !== undefined)
 		{
-			chrome.storage.sync.get("overrideOption", function(items) {
+			chrome.storage.sync.get(STORAGE_KEYS.OVERRIDE_OPTION, function(items) {
 				var overrideOption = items.overrideOption;
 				processNewUrl(tabId, newUrl, overrideOption);
 			});

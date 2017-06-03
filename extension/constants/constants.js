@@ -7,6 +7,11 @@ var OVERRIDE_OPTIONS =
 	DISABLE:  "disableRadioButton"
 };
 
+var STORAGE_KEYS =
+{
+	OVERRIDE_OPTION: "overrideOption"
+};
+
 var defaultOverride = OVERRIDE_OPTIONS.ALWAYS;
 
 var MESSAGE_TYPES =

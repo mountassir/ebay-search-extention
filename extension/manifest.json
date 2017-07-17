@@ -3,7 +3,7 @@
   "name": "Home country search for eBay",
   "author": "Mountassir Hafi : mountassirhafi@gmail.com",
   "homepage_url": "https://github.com/mountassir/ebay-search-extention",
-  "version": "1.1.2",
+  "version": "1.1.4",
 
   "description": "This extension sets the item location option in eBay search to home country only.",
   "icons": {
@@ -12,7 +12,8 @@
             "24":  "icons/main/icon-24.png",
             "32":  "icons/main/icon-32.png",
             "48":  "icons/main/icon-48.png",
-            "128": "icons/main/icon-128.png"
+            "128": "icons/main/icon-128.png",
+            "256": "icons/main/icon-256.png"
   },
 
   "browser_action": {
@@ -22,7 +23,8 @@
             "24":  "icons/main/icon-24.png",
             "32":  "icons/main/icon-32.png",
             "48":  "icons/main/icon-48.png",
-            "128": "icons/main/icon-128.png"
+            "128": "icons/main/icon-128.png",
+            "256": "icons/main/icon-256.png"
     },
     "default_popup": "options/options.html"
   },

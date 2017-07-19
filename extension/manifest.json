@@ -3,7 +3,7 @@
   "name": "Home country search for eBay",
   "author": "Mountassir Hafi : mountassirhafi@gmail.com",
   "homepage_url": "https://github.com/mountassir/ebay-search-extention",
-  "version": "1.1.4",
+  "version": "1.1.5",
 
   "description": "This extension sets the item location option in eBay search to home country only.",
   "icons": {

@@ -67,13 +67,6 @@ function setWidgetChecked(widgetId, checked)
 	}
 }
 
-function isOverrideOptionValid(option)
-{
-	return (option === OVERRIDE_OPTIONS.ALWAYS || 
-		    option === OVERRIDE_OPTIONS.NEW_ONLY ||
-		    option === OVERRIDE_OPTIONS.DISABLE);
-}
-
 document.addEventListener('DOMContentLoaded', initOptions);
 document.getElementById(OVERRIDE_OPTIONS.ALWAYS).addEventListener('click',   saveOptions);
 document.getElementById(OVERRIDE_OPTIONS.NEW_ONLY).addEventListener('click', saveOptions);

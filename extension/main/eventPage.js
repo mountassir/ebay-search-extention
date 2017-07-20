@@ -3,9 +3,11 @@ log("Event page loaded.", MESSAGE_TYPES.DEBUG);
 
 chrome.runtime.onInstalled.addListener(onInit);
 
+onInit();
+
 function onInit()
 {
-	log("onInstall event received.", MESSAGE_TYPES.DEBUG);
+	log("Initializing.", MESSAGE_TYPES.DEBUG);
 
 	initOptions();
 	registerEvents();
@@ -15,14 +17,16 @@ function initOptions()
 {
 	chrome.storage.sync.get(STORAGE_KEYS.OVERRIDE_OPTION, function(items) {
 		var currentOption = items.overrideOption;
-		var optionToSave = (currentOption !== undefined) ? currentOption : defaultOverride;
 
-		var optionKey = {};
-		optionKey[STORAGE_KEYS.OVERRIDE_OPTION] = optionToSave;
-		
-		chrome.storage.sync.set(optionKey, function() {
-			log("Override option set to: " + optionToSave);
-		});
+		if(!isOverrideOptionValid(currentOption))
+		{
+			var optionKey = {};
+			optionKey[STORAGE_KEYS.OVERRIDE_OPTION] = defaultOverride;
+			
+			chrome.storage.sync.set(optionKey, function() {
+				log("Override option set to default: " + defaultOverride);
+			});
+		}
 	});
 }
 

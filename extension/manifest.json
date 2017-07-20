@@ -30,7 +30,10 @@
   },
 
   "background": {
-    "scripts": ["constants/constants.js","main/eventPage.js"],
+    "scripts": [
+      "constants/constants.js",
+      "shared/utils.js",
+      "main/eventPage.js"],
     "persistent": false
   },
 

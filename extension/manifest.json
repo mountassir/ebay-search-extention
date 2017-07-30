@@ -12,8 +12,7 @@
             "24":  "icons/main/icon-24.png",
             "32":  "icons/main/icon-32.png",
             "48":  "icons/main/icon-48.png",
-            "128": "icons/main/icon-128.png",
-            "256": "icons/main/icon-256.png"
+            "128": "icons/main/icon-128.png"
   },
 
   "browser_action": {
@@ -23,8 +22,7 @@
             "24":  "icons/main/icon-24.png",
             "32":  "icons/main/icon-32.png",
             "48":  "icons/main/icon-48.png",
-            "128": "icons/main/icon-128.png",
-            "256": "icons/main/icon-256.png"
+            "128": "icons/main/icon-128.png"
     },
     "default_popup": "options/options.html"
   },

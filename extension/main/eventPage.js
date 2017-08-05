@@ -1,14 +1,13 @@
 
 log("Event page loaded.", MESSAGE_TYPES.DEBUG);
 
-chrome.runtime.onInstalled.addListener(onInit);
+registerEvents();
 
 function onInit()
 {
 	log("Initializing.", MESSAGE_TYPES.DEBUG);
 
 	initOptions();
-	registerEvents();
 }
 
 function initOptions() 
@@ -33,6 +32,7 @@ function registerEvents()
 	};
 
 	chrome.webNavigation.onBeforeNavigate.addListener(handleTabUpdate, urlFilter);
+	chrome.runtime.onInstalled.addListener(onInit);
 }
 
 function handleTabUpdate(event)

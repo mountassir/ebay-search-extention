@@ -3,8 +3,6 @@ log("Event page loaded.", MESSAGE_TYPES.DEBUG);
 
 chrome.runtime.onInstalled.addListener(onInit);
 
-onInit();
-
 function onInit()
 {
 	log("Initializing.", MESSAGE_TYPES.DEBUG);
@@ -15,15 +13,10 @@ function onInit()
 
 function initOptions() 
 {
-	chrome.storage.sync.get(STORAGE_KEYS.OVERRIDE_OPTION, function(items) {
-		var currentOption = items.overrideOption;
-
-		if(!isOverrideOptionValid(currentOption))
+	getOverrideOptionFromStorage(function(currentOverrideOption) {
+		if(!isOverrideOptionValid(currentOverrideOption))
 		{
-			var optionKey = {};
-			optionKey[STORAGE_KEYS.OVERRIDE_OPTION] = defaultOverride;
-			
-			chrome.storage.sync.set(optionKey, function() {
+			saveOverrideOptionToStorage(defaultOverride, function(){
 				log("Override option set to default: " + defaultOverride);
 			});
 		}
@@ -55,9 +48,8 @@ function handleTabUpdate(event)
 	{
 		if(tabId !== undefined)
 		{
-			chrome.storage.sync.get(STORAGE_KEYS.OVERRIDE_OPTION, function(items) {
-				var overrideOption = items.overrideOption;
-				processNewUrl(tabId, newUrl, overrideOption);
+			getOverrideOptionFromStorage(function(currentOverrideOption) {
+				processNewUrl(tabId, newUrl, currentOverrideOption);
 			});
 		}
 		else
@@ -224,28 +216,4 @@ function getEbayLocationIdentifier()
 function getEbayHomeLocationIdentifier()
 {
 	return getEbayLocationIdentifier() + HOME_LOCATION_VALUE;
-}
-
-function log(message, messageType)
-{
-	if(shouldLog === true) 
-	{
-		switch(messageType)
-		{
-			case MESSAGE_TYPES.DEBUG:
-			{
-				console.log(message);
-				break;
-			}
-			case MESSAGE_TYPES.ERROR:
-			{
-				console.error(message);
-				break;
-			}
-			default:
-			{
-				console.log(message);
-			}
-		}
-	}
 }

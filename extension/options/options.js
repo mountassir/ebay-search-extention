@@ -1,8 +1,14 @@
+log("Settings page loaded.", MESSAGE_TYPES.DEBUG);
+
 function setOverrideOption(overrideOption) 
 {
-	if (overrideOption == undefined || !isOverrideOptionValid(overrideOption)) 
+	if (!isOverrideOptionValid(overrideOption)) 
 	{
 		overrideOption = defaultOverride;
+
+		saveOverrideOptionToStorage(overrideOption, function(){
+			log("Override option set to default: " + overrideOption);
+		});
 	}
 
 	setWidgetChecked(overrideOption, true);
@@ -10,8 +16,8 @@ function setOverrideOption(overrideOption)
 
 function initOptions() 
 {
-	chrome.storage.sync.get(STORAGE_KEYS.OVERRIDE_OPTION, function(items) {
-		setOverrideOption(items.overrideOption);
+	getOverrideOptionFromStorage(function(currentOverrideOption) {
+		setOverrideOption(currentOverrideOption);
 	});
 }
 

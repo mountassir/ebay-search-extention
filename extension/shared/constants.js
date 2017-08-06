@@ -12,7 +12,7 @@ var STORAGE_KEYS =
 	OVERRIDE_OPTION: "overrideOption"
 };
 
-var defaultOverride = OVERRIDE_OPTIONS.ALWAYS;
+var defaultOverride = OVERRIDE_OPTIONS.NEW_ONLY;
 
 var MESSAGE_TYPES =
 {

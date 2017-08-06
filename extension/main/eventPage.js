@@ -85,8 +85,9 @@ function processNewUrl(tabId, url, overrideOption)
 
 function shouldProcessEbayUrl(url, overrideOption)
 {
-	if(overrideOption === OVERRIDE_OPTIONS.ALWAYS || 
-	   overrideOption === OVERRIDE_OPTIONS.NEW_ONLY)
+	// if(overrideOption === OVERRIDE_OPTIONS.ALWAYS || 
+	//    overrideOption === OVERRIDE_OPTIONS.NEW_ONLY)
+	if(overrideOption === OVERRIDE_OPTIONS.NEW_ONLY)
 	{
 		log("Location override is enabled: " + overrideOption, MESSAGE_TYPES.DEBUG);
 	}
@@ -158,10 +159,10 @@ function isSearchUrl(url)
 
 function isAlreadyProcessed(url, overrideOption)
 {
-	if(overrideOption === OVERRIDE_OPTIONS.ALWAYS)
-	{
-		return url.indexOf(getEbayHomeLocationIdentifier()) !== -1;
-	}
+	// if(overrideOption === OVERRIDE_OPTIONS.ALWAYS)
+	// {
+	// 	return url.indexOf(getEbayHomeLocationIdentifier()) !== -1;
+	// }
 	
 	return url.indexOf(getEbayLocationIdentifier()) !== -1;
 }

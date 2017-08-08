@@ -1,4 +1,4 @@
-# My country only - eBay search
+# eBay item location - My country only
 
 As a frequent eBay user, I almost always found myself starting my search by first setting the filter for items in my location only. Despite the long running feedback from many users on the need for the stickiness of item location preference, eBay has yet to provide a solution. 
 

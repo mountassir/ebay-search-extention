@@ -40,6 +40,12 @@
     "chrome_style": true
   },
 
+  "applications": {
+    "gecko": {
+      "id": "ebayextension@mountassirhafi.com"
+    }
+  },
+
   "permissions": [
     "activeTab", 
     "webNavigation",

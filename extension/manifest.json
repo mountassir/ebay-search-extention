@@ -54,6 +54,5 @@
     "http://*/*",
     "https://*/*"
   ],
-  "incognito": "split",
   "minimum_chrome_version" : "22"
 }

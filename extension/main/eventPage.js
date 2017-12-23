@@ -65,17 +65,40 @@ function handleTabUpdate(event)
 
 function processNewUrl(tabId, url, overrideOption)
 {
-	if(shouldProcessEbayUrl(url, overrideOption))
+	var urlType = getUrlType(url);
+
+	if(shouldProcessEbayUrl(url, urlType, overrideOption))
 	{
-		stopLoading(tabId);
+		var processedUrl = url;
+		var urlChanged = false;
 
-		var noLocationUrl = clearLocationInUrl(url);
-		var homeOnlyUrl = addHomeOnlyToEbayUrl(noLocationUrl);
+		if(overrideOption === OVERRIDE_OPTIONS.NEW_ONLY)
+		{
+			log("Location override is enabled: " + overrideOption, MESSAGE_TYPES.DEBUG);
 
-		log("Replacing: " + url, MESSAGE_TYPES.DEBUG);
-		log("With: " + homeOnlyUrl, MESSAGE_TYPES.DEBUG);
+			if(!isOptionAlreadySet(url, EBAY_BLOCATION_IDENTIFIER, HOME_LOCATION_VALUE))
+			{
+				stopLoading(tabId);
 
-		setTabUrl(tabId, homeOnlyUrl);
+				log("Location not set yet: " + url, MESSAGE_TYPES.DEBUG);
+
+				processedUrl = updateOptionInUrl(url, EBAY_BLOCATION_IDENTIFIER, HOME_LOCATION_VALUE);
+
+				urlChanged = true;
+			}
+			else
+			{
+				log("Location already set, nothing to do: " + url, MESSAGE_TYPES.DEBUG);
+			}
+		}
+
+		if(true === urlChanged)
+		{
+			log("Replacing: " + url, MESSAGE_TYPES.DEBUG);
+			log("With: " + processedUrl, MESSAGE_TYPES.DEBUG);
+
+			setTabUrl(tabId, processedUrl);
+		}
 	}
 	else
 	{
@@ -83,55 +106,47 @@ function processNewUrl(tabId, url, overrideOption)
 	}
 }
 
-function shouldProcessEbayUrl(url, overrideOption)
+function shouldProcessEbayUrl(url, urlType, overrideOption)
 {
-	// if(overrideOption === OVERRIDE_OPTIONS.ALWAYS || 
-	//    overrideOption === OVERRIDE_OPTIONS.NEW_ONLY)
-	if(overrideOption === OVERRIDE_OPTIONS.NEW_ONLY)
+	if(URL_TYPES.EBAY_SEARCH !== urlType && URL_TYPES.EBAY_BROWSE !== urlType)
 	{
-		log("Location override is enabled: " + overrideOption, MESSAGE_TYPES.DEBUG);
-	}
-	else
-	{
-		log("Location override is disabled: " + overrideOption, MESSAGE_TYPES.DEBUG);
-
-		return false;
-	}
-
-	if(isEbayUrl(url))
-	{
-		log("Got an ebay url: " + url, MESSAGE_TYPES.DEBUG);
-	}
-	else
-	{
-		log("Not an ebay url, nothing to do: " + url, MESSAGE_TYPES.DEBUG);
-
-		return false;
-	}
-
-	if(isSearchUrl(url))
-	{
-		log("Ebay url is a search: " + url, MESSAGE_TYPES.DEBUG);
-	}
-	else
-	{
-		log("Ebay url is not a search, nothing to do: " + url, MESSAGE_TYPES.DEBUG);
-
-		return false;
-	}
-
-	if(!isAlreadyProcessed(url, overrideOption))
-	{
-		log("Location not set yet: " + url, MESSAGE_TYPES.DEBUG);
-	}
-	else
-	{
-		log("Location already set, nothing to do: " + url, MESSAGE_TYPES.DEBUG);
+		log("Ebay url is neither a search nor a browse, nothing to do: " + url, MESSAGE_TYPES.DEBUG);
 
 		return false;
 	}
 
 	return true;
+}
+
+function getUrlType(url)
+{
+	var urlType = URL_TYPES.NOT_EBAY;
+
+	if(isEbayUrl(url))
+	{
+		log("Got an ebay url: " + url, MESSAGE_TYPES.DEBUG);
+
+		urlType = URL_TYPES.EBAY;
+
+		if(isEbaySearchUrl(url))
+		{
+			log("Ebay url is a search: " + url, MESSAGE_TYPES.DEBUG);
+
+			urlType = URL_TYPES.EBAY_SEARCH;
+		}
+		else if(isEbayBrowseUrl(url))
+		{
+			log("Ebay url is a browse: " + url, MESSAGE_TYPES.DEBUG);
+
+			urlType = URL_TYPES.EBAY_BROWSE;
+		}
+	}
+	else
+	{
+		log("Not an ebay url: " + url, MESSAGE_TYPES.DEBUG);
+	}
+
+	return urlType;
 }
 
 function stopLoading(tabId) 
@@ -149,47 +164,59 @@ function stopLoading(tabId)
 
 function isEbayUrl(url)
 {
-	return url.indexOf(getEbayUrlIdentifier()) !== -1;
+	return url.indexOf(EBAY_URL_IDENTIFIER) !== -1;
 }
 
-function isSearchUrl(url)
+function isEbaySearchUrl(url)
 {
-	return url.indexOf(getEbaySearchIdentifier()) !== -1;
+	return url.indexOf(EBAY_SEARCH_IDENTIFIER) !== -1;
 }
 
-function isAlreadyProcessed(url, overrideOption)
+function isEbayBrowseUrl(url)
 {
-	// if(overrideOption === OVERRIDE_OPTIONS.ALWAYS)
-	// {
-	// 	return url.indexOf(getEbayHomeLocationIdentifier()) !== -1;
-	// }
-	
-	return url.indexOf(getEbayLocationIdentifier()) !== -1;
+	return url.indexOf(EBAY_BROWSE_IDENTIFIER) !== -1;
 }
 
-function clearLocationInUrl(url)
+function isOptionValueAlreadySet(url, oprion, value)
 {
-	var locationtParameterAt = url.indexOf(getEbayLocationIdentifier());
+	return url.indexOf(oprion + SEARCH_EQUAL_DELIMITER + value) !== -1;
+}
 
-	while(locationtParameterAt !== -1)
+function isOptionAlreadySet(url, oprion)
+{
+	return url.indexOf(oprion + SEARCH_EQUAL_DELIMITER) !== -1;
+}
+
+function isSearchAlreadySet(url)
+{
+	return url.indexOf(SEARCH_PRIMARY_DELIMITER) !== -1;
+}
+
+function updateOptionInUrl(url, optionIdentifier, value)
+{
+	var optionIndex = url.indexOf(optionIdentifier);
+
+	if(optionIndex !== -1)
 	{
-		var nextParameterAt = url.indexOf(SEARCH_OPTIONS_DELIMITER, locationtParameterAt + 1);
+		var nextEqualDelimiterIndex = url.indexOf(SEARCH_EQUAL_DELIMITER, optionIndex + optionIdentifier.length);
 
-		var foundLocationPref = (nextParameterAt === -1) ? 
-			url.substring(locationtParameterAt) :
-			url.substring(locationtParameterAt, nextParameterAt);
+		if(nextEqualDelimiterIndex !== -1)
+		{
+			var nextSearchDelimiterIndex = url.indexOf(SEARCH_SECONDARY_DELIMITER, nextEqualDelimiterIndex + 1);
 
-		url = url.replace(foundLocationPref, "");
+			var valueToReplace = (nextSearchDelimiterIndex === -1) ? 
+				url.substring(nextEqualDelimiterIndex) :
+				url.substring(nextEqualDelimiterIndex, nextSearchDelimiterIndex);
 
-		locationtParameterAt = url.indexOf(getEbayLocationIdentifier());
+			url = url.replace(valueToReplace, value);
+		}
+	}
+	else
+	{
+		return appendOptionToUrl(url, optionIdentifier, value);
 	}
 
 	return url;
-}
-
-function addHomeOnlyToEbayUrl(url)
-{
-	return url + getEbayHomeLocationIdentifier();
 }
 
 function setTabUrl(tabId, url)
@@ -199,22 +226,35 @@ function setTabUrl(tabId, url)
 	chrome.tabs.update(tabId, updateProperties);
 }
 
-function getEbayUrlIdentifier()
+function appendOptionToUrl(url, option, value)
 {
-	return "www.ebay.";
+	if(isSearchAlreadySet(url))
+	{
+		return url + SEARCH_SECONDARY_DELIMITER + option + SEARCH_EQUAL_DELIMITER + value; 
+	}
+	else
+	{
+		return url + SEARCH_PRIMARY_DELIMITER + option + SEARCH_EQUAL_DELIMITER + value;
+	}
 }
 
-function getEbaySearchIdentifier()
-{
-	return "/sch/";
-}
+// function clearSecondarySearchInUrl(url, searchIdentifier)
+// {
+// 	var secondarySearchIdentifier = secondInLineSearch(searchIdentifier);
+// 	var locationtParameterAt = url.indexOf(secondarySearchIdentifier);
 
-function getEbayLocationIdentifier()
-{
-	return "&LH_PrefLoc=";
-}
+// 	while(locationtParameterAt !== -1)
+// 	{
+// 		var nextParameterAt = url.indexOf(SEARCH_SECONDARY_DELIMITER, locationtParameterAt + 1);
 
-function getEbayHomeLocationIdentifier()
-{
-	return getEbayLocationIdentifier() + HOME_LOCATION_VALUE;
-}
+// 		var foundLocationPref = (nextParameterAt === -1) ? 
+// 			url.substring(locationtParameterAt) :
+// 			url.substring(locationtParameterAt, nextParameterAt);
+
+// 		url = url.replace(foundLocationPref, "");
+
+// 		locationtParameterAt = url.indexOf(secondarySearchIdentifier);
+// 	}
+
+// 	return url;
+// }

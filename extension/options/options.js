@@ -40,11 +40,6 @@ function saveOptions()
 
 function getSelectedOverrideOption()
 {
-	// if(isWidgetChecked(OVERRIDE_OPTIONS.ALWAYS))
-	// {
-	// 	return OVERRIDE_OPTIONS.ALWAYS;
-	// }
-
 	if(isWidgetChecked(OVERRIDE_OPTIONS.NEW_ONLY))
 	{
 		return OVERRIDE_OPTIONS.NEW_ONLY;
@@ -74,6 +69,5 @@ function setWidgetChecked(widgetId, checked)
 }
 
 document.addEventListener('DOMContentLoaded', initOptions);
-//document.getElementById(OVERRIDE_OPTIONS.ALWAYS).addEventListener('click',   saveOptions);
 document.getElementById(OVERRIDE_OPTIONS.NEW_ONLY).addEventListener('click', saveOptions);
 document.getElementById(OVERRIDE_OPTIONS.DISABLE).addEventListener('click',  saveOptions);

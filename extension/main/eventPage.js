@@ -237,24 +237,3 @@ function appendOptionToUrl(url, option, value)
 		return url + SEARCH_PRIMARY_DELIMITER + option + SEARCH_EQUAL_DELIMITER + value;
 	}
 }
-
-// function clearSecondarySearchInUrl(url, searchIdentifier)
-// {
-// 	var secondarySearchIdentifier = secondInLineSearch(searchIdentifier);
-// 	var locationtParameterAt = url.indexOf(secondarySearchIdentifier);
-
-// 	while(locationtParameterAt !== -1)
-// 	{
-// 		var nextParameterAt = url.indexOf(SEARCH_SECONDARY_DELIMITER, locationtParameterAt + 1);
-
-// 		var foundLocationPref = (nextParameterAt === -1) ? 
-// 			url.substring(locationtParameterAt) :
-// 			url.substring(locationtParameterAt, nextParameterAt);
-
-// 		url = url.replace(foundLocationPref, "");
-
-// 		locationtParameterAt = url.indexOf(secondarySearchIdentifier);
-// 	}
-
-// 	return url;
-// }

@@ -41,10 +41,8 @@
   },
 
   "permissions": [
-    "activeTab", 
     "webNavigation",
-    "tabs", 
-    "storage", 
+    "storage",
     "http://*/*",
     "https://*/*"
   ],

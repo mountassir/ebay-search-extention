@@ -76,13 +76,13 @@ function processNewUrl(tabId, url, overrideOption)
 		{
 			log("Location override is enabled: " + overrideOption, MESSAGE_TYPES.DEBUG);
 
-			if(!isOptionAlreadySet(url, EBAY_BLOCATION_IDENTIFIER, HOME_LOCATION_VALUE))
+			if(!isOptionAlreadySet(url, EBAY_LOCATION_IDENTIFIER, HOME_LOCATION_VALUE))
 			{
 				stopLoading(tabId);
 
 				log("Location not set yet: " + url, MESSAGE_TYPES.DEBUG);
 
-				processedUrl = updateOptionInUrl(url, EBAY_BLOCATION_IDENTIFIER, HOME_LOCATION_VALUE);
+				processedUrl = updateOptionInUrl(url, EBAY_LOCATION_IDENTIFIER, HOME_LOCATION_VALUE);
 
 				urlChanged = true;
 			}
@@ -184,7 +184,7 @@ function isOptionValueAlreadySet(url, oprion, value)
 
 function isOptionAlreadySet(url, oprion)
 {
-	return url.indexOf(oprion + SEARCH_EQUAL_DELIMITER) !== -1;
+	return (url.indexOf(oprion + SEARCH_EQUAL_DELIMITER) !== -1) || (url.indexOf(oprion + SEARCH_ADVANCED_EQUAL_DELIMITER) !== -1);
 }
 
 function isSearchAlreadySet(url)

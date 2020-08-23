@@ -65,57 +65,116 @@ function handleTabUpdate(event)
 
 function processNewUrl(tabId, url, overrideOption)
 {
-	var urlType = getUrlType(url);
-
-	if(shouldProcessEbayUrl(url, urlType, overrideOption))
+	if(overrideOption === OVERRIDE_OPTIONS.DISABLE)
 	{
-		var processedUrl = url;
-		var urlChanged = false;
+		log("Location override is disabled, nothing to do here.", MESSAGE_TYPES.DEBUG);
+	}
+	else
+	{
+		log("Location override is enabled: " + overrideOption, MESSAGE_TYPES.DEBUG);
 
-		if(overrideOption === OVERRIDE_OPTIONS.NEW_ONLY)
+		var urlType = getUrlType(url);
+
+		if(shouldProcessEbayUrl(url, urlType))
 		{
-			log("Location override is enabled: " + overrideOption, MESSAGE_TYPES.DEBUG);
+			var processedUrl = url;
+			var urlChanged = false;
 
-			if(!isOptionAlreadySet(url, EBAY_LOCATION_IDENTIFIER, HOME_LOCATION_VALUE))
+			if(overrideOption === OVERRIDE_OPTIONS.COUNTRY_ONLY)
 			{
-				stopLoading(tabId);
+				if(!optionInUrlNeedsUpdating(url, EBAY_LOCATION_IDENTIFIER, COUNTRY_LOCATION_VALUE))
+				{
+					stopLoading(tabId);
 
-				log("Location not set yet: " + url, MESSAGE_TYPES.DEBUG);
+					log("Location not set yet: " + url, MESSAGE_TYPES.DEBUG);
 
-				processedUrl = updateOptionInUrl(url, EBAY_LOCATION_IDENTIFIER, HOME_LOCATION_VALUE);
+					processedUrl = updateOptionInUrl(url, EBAY_LOCATION_IDENTIFIER, COUNTRY_LOCATION_VALUE);
 
-				urlChanged = true;
+					urlChanged = true;
+				}
+				else
+				{
+					log("Location already set, nothing to do: " + url, MESSAGE_TYPES.DEBUG);
+				}
 			}
-			else
+
+			if(overrideOption === OVERRIDE_OPTIONS.REGION_ONLY)
 			{
-				log("Location already set, nothing to do: " + url, MESSAGE_TYPES.DEBUG);
+				if(!optionInUrlNeedsUpdating(url, EBAY_LOCATION_IDENTIFIER, REGION_LOCATION_VALUE))
+				{
+					stopLoading(tabId);
+
+					log("Location not set yet: " + url, MESSAGE_TYPES.DEBUG);
+
+					processedUrl = updateOptionInUrl(url, EBAY_LOCATION_IDENTIFIER, REGION_LOCATION_VALUE);
+
+					urlChanged = true;
+				}
+				else
+				{
+					log("Location already set, nothing to do here: " + url, MESSAGE_TYPES.DEBUG);
+				}
+			}
+
+			if(true === urlChanged)
+			{
+				log("Replacing: " + url, MESSAGE_TYPES.DEBUG);
+				log("With: " + processedUrl, MESSAGE_TYPES.DEBUG);
+
+				setTabUrl(tabId, processedUrl);
 			}
 		}
-
-		if(true === urlChanged)
+		else
 		{
-			log("Replacing: " + url, MESSAGE_TYPES.DEBUG);
-			log("With: " + processedUrl, MESSAGE_TYPES.DEBUG);
+			log("Not processing ebay url: " + url, MESSAGE_TYPES.DEBUG);
+		}
+	}
+}
 
-			setTabUrl(tabId, processedUrl);
+function updateOptionInUrl(url, optionIdentifier, value)
+{
+	//Example URL /sch/i.html?_from=R40&_nkw=gtx&_sacat=0&LH_PrefLoc=3&rt=nc&_oaa=1
+	var optionIndex = url.indexOf(optionIdentifier);
+
+	//Example URL /sch/i.html?_from=R40&_nkw=gtx&_sacat=0&LH_PrefLoc=3&rt=nc&_oaa=1
+    //                                optionIndex---------^          
+
+	if(optionIndex !== -1)
+	{
+		//If a location option is already set, we have to update it
+		var nextEqualDelimiterIndex = url.indexOf(SEARCH_EQUAL_DELIMITER, optionIndex + optionIdentifier.length);
+
+		//Example URL /sch/i.html?_from=R40&_nkw=gtx&_sacat=0&LH_PrefLoc=3&rt=nc&_oaa=1
+        //                                optionIndex---------^         ^  
+        //                                nextEqualDelimiterIndex(=)----^ 
+
+		if(nextEqualDelimiterIndex !== -1)
+		{
+			var nextSearchDelimiterIndex = url.indexOf(SEARCH_SECONDARY_DELIMITER, nextEqualDelimiterIndex + 1);
+
+			//Example URL /sch/i.html?_from=R40&_nkw=gtx&_sacat=0&LH_PrefLoc=3&rt=nc&_oaa=1
+	        //                                optionIndex---------^         ^ ^ 
+	        //                                nextEqualDelimiterIndex"="----^ ^
+	        //                                nextSearchDelimiterIndex"&"-----^
+
+			var valueToReplace = (nextSearchDelimiterIndex === -1) ? 
+				url.substring(optionIndex) :
+				url.substring(optionIndex, nextSearchDelimiterIndex);
+
+			//Example URL /sch/i.html?_from=R40&_nkw=gtx&_sacat=0&LH_PrefLoc=3&rt=nc&_oaa=1
+			//                                                   |------------|  
+	        //We replace the value between optionIndex and nextSearchDelimiterIndex, "LH_PrefLoc=3" in this example.
+
+			url = url.replace(valueToReplace, optionIdentifier + SEARCH_EQUAL_DELIMITER + value);
 		}
 	}
 	else
 	{
-		log("Not processing ebay url: " + url, MESSAGE_TYPES.DEBUG);
-	}
-}
-
-function shouldProcessEbayUrl(url, urlType, overrideOption)
-{
-	if(URL_TYPES.EBAY_SEARCH !== urlType && URL_TYPES.EBAY_BROWSE !== urlType)
-	{
-		log("Ebay url is neither a search nor a browse, nothing to do: " + url, MESSAGE_TYPES.DEBUG);
-
-		return false;
+		//If no location option was set, we can just append it to the URL
+		return appendOptionToUrl(url, optionIdentifier, value);
 	}
 
-	return true;
+	return url;
 }
 
 function getUrlType(url)
@@ -149,6 +208,13 @@ function getUrlType(url)
 	return urlType;
 }
 
+function setTabUrl(tabId, url)
+{
+	var updateProperties = {url: url};
+
+	chrome.tabs.update(tabId, updateProperties);
+}
+
 function stopLoading(tabId) 
 {
 	log("Stopping tabId: " + tabId + " from loading.", MESSAGE_TYPES.DEBUG);
@@ -160,6 +226,18 @@ function stopLoading(tabId)
 	};
 
     chrome.tabs.executeScript(tabId, script);
+}
+
+function shouldProcessEbayUrl(url, urlType)
+{
+	if(URL_TYPES.EBAY_SEARCH !== urlType && URL_TYPES.EBAY_BROWSE !== urlType)
+	{
+		log("Ebay url is neither a search nor a browse, nothing to do: " + url, MESSAGE_TYPES.DEBUG);
+
+		return false;
+	}
+
+	return true;
 }
 
 function isEbayUrl(url)
@@ -177,58 +255,34 @@ function isEbayBrowseUrl(url)
 	return url.indexOf(EBAY_BROWSE_IDENTIFIER) !== -1;
 }
 
-function isOptionValueAlreadySet(url, oprion, value)
+function optionInUrlNeedsUpdating(url, oprion, value)
+{
+	return isOptionAlreadySetInUrl(url, oprion) || isAdvancedSearch(url, oprion);
+}
+
+function isOptionAlreadySetInUrl(url, oprion)
+{
+	return url.indexOf(oprion + SEARCH_EQUAL_DELIMITER) !== -1;
+}
+
+function isOptionValueAlreadySetInUrl(url, oprion, value)
 {
 	return url.indexOf(oprion + SEARCH_EQUAL_DELIMITER + value) !== -1;
 }
 
-function isOptionAlreadySet(url, oprion)
+function isAdvancedSearch(url, oprion)
 {
-	return (url.indexOf(oprion + SEARCH_EQUAL_DELIMITER) !== -1) || (url.indexOf(oprion + SEARCH_ADVANCED_EQUAL_DELIMITER) !== -1);
+	return url.indexOf(oprion + SEARCH_ADVANCED_EQUAL_DELIMITER) !== -1;
 }
 
-function isSearchAlreadySet(url)
+function isAnySearchASetInUrl(url)
 {
 	return url.indexOf(SEARCH_PRIMARY_DELIMITER) !== -1;
 }
 
-function updateOptionInUrl(url, optionIdentifier, value)
-{
-	var optionIndex = url.indexOf(optionIdentifier);
-
-	if(optionIndex !== -1)
-	{
-		var nextEqualDelimiterIndex = url.indexOf(SEARCH_EQUAL_DELIMITER, optionIndex + optionIdentifier.length);
-
-		if(nextEqualDelimiterIndex !== -1)
-		{
-			var nextSearchDelimiterIndex = url.indexOf(SEARCH_SECONDARY_DELIMITER, nextEqualDelimiterIndex + 1);
-
-			var valueToReplace = (nextSearchDelimiterIndex === -1) ? 
-				url.substring(nextEqualDelimiterIndex) :
-				url.substring(nextEqualDelimiterIndex, nextSearchDelimiterIndex);
-
-			url = url.replace(valueToReplace, value);
-		}
-	}
-	else
-	{
-		return appendOptionToUrl(url, optionIdentifier, value);
-	}
-
-	return url;
-}
-
-function setTabUrl(tabId, url)
-{
-	var updateProperties = {url: url};
-
-	chrome.tabs.update(tabId, updateProperties);
-}
-
 function appendOptionToUrl(url, option, value)
 {
-	if(isSearchAlreadySet(url))
+	if(isAnySearchASetInUrl(url))
 	{
 		return url + SEARCH_SECONDARY_DELIMITER + option + SEARCH_EQUAL_DELIMITER + value; 
 	}

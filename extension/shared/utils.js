@@ -1,6 +1,7 @@
 function isOverrideOptionValid(option)
 {
-	return (option === OVERRIDE_OPTIONS.NEW_ONLY ||
+	return (option === OVERRIDE_OPTIONS.COUNTRY_ONLY ||
+		    option === OVERRIDE_OPTIONS.REGION_ONLY ||
 		    option === OVERRIDE_OPTIONS.DISABLE);
 }
 

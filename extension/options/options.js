@@ -40,9 +40,14 @@ function saveOptions()
 
 function getSelectedOverrideOption()
 {
-	if(isWidgetChecked(OVERRIDE_OPTIONS.NEW_ONLY))
+	if(isWidgetChecked(OVERRIDE_OPTIONS.COUNTRY_ONLY))
 	{
-		return OVERRIDE_OPTIONS.NEW_ONLY;
+		return OVERRIDE_OPTIONS.COUNTRY_ONLY;
+	}
+
+	if(isWidgetChecked(OVERRIDE_OPTIONS.REGION_ONLY))
+	{
+		return OVERRIDE_OPTIONS.REGION_ONLY;
 	}
 
 	if(isWidgetChecked(OVERRIDE_OPTIONS.DISABLE))
@@ -69,5 +74,6 @@ function setWidgetChecked(widgetId, checked)
 }
 
 document.addEventListener('DOMContentLoaded', initOptions);
-document.getElementById(OVERRIDE_OPTIONS.NEW_ONLY).addEventListener('click', saveOptions);
+document.getElementById(OVERRIDE_OPTIONS.COUNTRY_ONLY).addEventListener('click', saveOptions);
+document.getElementById(OVERRIDE_OPTIONS.REGION_ONLY).addEventListener('click', saveOptions);
 document.getElementById(OVERRIDE_OPTIONS.DISABLE).addEventListener('click',  saveOptions);

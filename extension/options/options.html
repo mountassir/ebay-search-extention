@@ -8,8 +8,9 @@
 <body>
 	<h1>Settings</h1>
 	<form>
-		<input type="radio" id="newOnlyRadioButton" name="type" title="This option overrides 'Default' item location to search for items in your country only."> Override eBay 'Default' location to my country<br>
-		<input type="radio" id="disableRadioButton" name="type" title="No location override."> Disable<br>
+		<input type="radio" id="countryOnlyRadioButton" name="type" title="This option forces eBay to only search for items in your country."> Only search for items in my country<br>
+		<input type="radio" id="regionOnlyRadioButton" name="type" title="This option forces eBay to only search for items in your region, like European Union, North America etc."> Only search for items in my continent region<br>
+		<input type="radio" id="disableRadioButton" name="type" title="No location search override (as if this extension was not installed)."> Disable<br>
 	</form>
 
 	<h1>Donate</h1>
@@ -29,9 +30,7 @@
 	</a>
 
 	<h1>Permissions</h1>
-	<p>    
-	<b>activeTab:</b> Get eBay search trigger.<br>
-    <b>tabs:</b> Apply eBay location override.<br>
+	<p>
     <b>storage:</b> Save the user's settings.<br>
     </p>
 

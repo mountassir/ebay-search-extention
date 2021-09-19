@@ -3,7 +3,8 @@ var shouldLog = true;
 var OVERRIDE_OPTIONS =
 {
 	COUNTRY_ONLY: "countryOnlyRadioButton",
-	REGION_ONLY: "regionOnlyRadioButton",
+	CONTINENT_ONLY: "regionOnlyRadioButton",
+	CONTINENTAL_REGION_ONLY: "continentalRegionOnlyRadioButton",
 	DISABLE:  "disableRadioButton"
 };
 
@@ -34,7 +35,8 @@ var EBAY_SEARCH_IDENTIFIER = "/sch/";
 var EBAY_BROWSE_IDENTIFIER = "/bn_";
 var EBAY_LOCATION_IDENTIFIER = "LH_PrefLoc";
 var COUNTRY_LOCATION_VALUE = "1";
-var REGION_LOCATION_VALUE = "3";
+var CONTINENT_LOCATION_VALUE = "3";
+var CONTINENT_REGION_LOCATION_VALUE = "6";
 var SEARCH_SECONDARY_DELIMITER = "&";
 var SEARCH_EQUAL_DELIMITER = "=";
 var SEARCH_ADVANCED_EQUAL_DELIMITER = "%";

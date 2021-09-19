@@ -98,15 +98,33 @@ function processNewUrl(tabId, url, overrideOption)
 				}
 			}
 
-			if(overrideOption === OVERRIDE_OPTIONS.REGION_ONLY)
+			if(overrideOption === OVERRIDE_OPTIONS.CONTINENT_ONLY)
 			{
-				if(!optionInUrlNeedsUpdating(url, EBAY_LOCATION_IDENTIFIER, REGION_LOCATION_VALUE))
+				if(!optionInUrlNeedsUpdating(url, EBAY_LOCATION_IDENTIFIER, CONTINENT_LOCATION_VALUE))
 				{
 					stopLoading(tabId);
 
 					log("Location not set yet: " + url, MESSAGE_TYPES.DEBUG);
 
-					processedUrl = updateOptionInUrl(url, EBAY_LOCATION_IDENTIFIER, REGION_LOCATION_VALUE);
+					processedUrl = updateOptionInUrl(url, EBAY_LOCATION_IDENTIFIER, CONTINENT_LOCATION_VALUE);
+
+					urlChanged = true;
+				}
+				else
+				{
+					log("Location already set, nothing to do here: " + url, MESSAGE_TYPES.DEBUG);
+				}
+			}
+
+			if(overrideOption === OVERRIDE_OPTIONS.CONTINENTAL_REGION_ONLY)
+			{
+				if(!optionInUrlNeedsUpdating(url, EBAY_LOCATION_IDENTIFIER, CONTINENT_REGION_LOCATION_VALUE))
+				{
+					stopLoading(tabId);
+
+					log("Location not set yet: " + url, MESSAGE_TYPES.DEBUG);
+
+					processedUrl = updateOptionInUrl(url, EBAY_LOCATION_IDENTIFIER, CONTINENT_REGION_LOCATION_VALUE);
 
 					urlChanged = true;
 				}

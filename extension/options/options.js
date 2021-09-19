@@ -36,6 +36,10 @@ function saveOptions()
 			setTimeout(function() { status.textContent = ''; }, 750);
 		});
 	}
+	else
+	{
+		log("Got an invalid option, not saving: " + overrideOption, MESSAGE_TYPES.ERROR);
+	}
 }
 
 function getSelectedOverrideOption()
@@ -45,9 +49,14 @@ function getSelectedOverrideOption()
 		return OVERRIDE_OPTIONS.COUNTRY_ONLY;
 	}
 
-	if(isWidgetChecked(OVERRIDE_OPTIONS.REGION_ONLY))
+	if(isWidgetChecked(OVERRIDE_OPTIONS.CONTINENT_ONLY))
 	{
-		return OVERRIDE_OPTIONS.REGION_ONLY;
+		return OVERRIDE_OPTIONS.CONTINENT_ONLY;
+	}
+
+	if(isWidgetChecked(OVERRIDE_OPTIONS.CONTINENTAL_REGION_ONLY))
+	{
+		return OVERRIDE_OPTIONS.CONTINENTAL_REGION_ONLY;
 	}
 
 	if(isWidgetChecked(OVERRIDE_OPTIONS.DISABLE))
@@ -75,5 +84,6 @@ function setWidgetChecked(widgetId, checked)
 
 document.addEventListener('DOMContentLoaded', initOptions);
 document.getElementById(OVERRIDE_OPTIONS.COUNTRY_ONLY).addEventListener('click', saveOptions);
-document.getElementById(OVERRIDE_OPTIONS.REGION_ONLY).addEventListener('click', saveOptions);
+document.getElementById(OVERRIDE_OPTIONS.CONTINENT_ONLY).addEventListener('click', saveOptions);
+document.getElementById(OVERRIDE_OPTIONS.CONTINENTAL_REGION_ONLY).addEventListener('click', saveOptions);
 document.getElementById(OVERRIDE_OPTIONS.DISABLE).addEventListener('click',  saveOptions);

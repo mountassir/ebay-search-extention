@@ -1,7 +1,8 @@
 function isOverrideOptionValid(option)
 {
 	return (option === OVERRIDE_OPTIONS.COUNTRY_ONLY ||
-		    option === OVERRIDE_OPTIONS.REGION_ONLY ||
+		    option === OVERRIDE_OPTIONS.CONTINENT_ONLY ||
+		    option === OVERRIDE_OPTIONS.CONTINENTAL_REGION_ONLY ||
 		    option === OVERRIDE_OPTIONS.DISABLE);
 }
 

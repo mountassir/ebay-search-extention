@@ -23,15 +23,15 @@ function initOptions()
 
 function saveOptions()
 {
-	var overrideOption = getSelectedOverrideOption();
+	let overrideOption = getSelectedOverrideOption();
 
 	if(isOverrideOptionValid(overrideOption))
 	{
-		var optionKey = {};
+		let optionKey = {};
 		optionKey[STORAGE_KEYS.OVERRIDE_OPTION] = overrideOption;
 		
 		chrome.storage.sync.set(optionKey, function() {
-			var status = document.getElementById('status');
+			let status = document.getElementById('status');
 			status.textContent = 'Options saved.';
 			setTimeout(function() { status.textContent = ''; }, 750);
 		});
@@ -67,14 +67,14 @@ function getSelectedOverrideOption()
 
 function isWidgetChecked(widgetId)
 {
-	var widget = document.getElementById(widgetId);
+	let widget = document.getElementById(widgetId);
 
 	return (widget !== undefined && widget.checked === true)
 }
 
 function setWidgetChecked(widgetId, checked)
 {
-	var widget = document.getElementById(widgetId);
+	let widget = document.getElementById(widgetId);
 
 	if(widget !== undefined)
 	{

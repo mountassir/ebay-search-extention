@@ -53,7 +53,7 @@ function getStorage(callBack)
 
 function setStorage(storageKey, value, callBack)
 {
-	var key = {};
+	let key = {};
 	key[storageKey] = value;
 	
 	chrome.storage.sync.set(key, function() {

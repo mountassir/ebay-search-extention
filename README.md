@@ -1,6 +1,7 @@
 # eBay item location - My country only
 
-<p align="center"><a href="https://i.imgur.com/Z9iRXCA.jpg" target="_blank"><img src="https://i.imgur.com/Z9iRXCA.jpg" border="0"/></a></p>
+![app_screenshot](resources/store_screenshot.png)
+
 As a frequent eBay user, I almost always found myself starting my search by first setting the filter for items in my location only. Despite the long running feedback from many users on the need for the stickiness of item location preference, eBay has yet to provide a solution. 
 
 To facilitate a more efficient search, I designed an extension that defaults my eBay searches to only items in my location. It has saved me a lot of time and has been serving me very well so I'm publishing the extension for everyone's use.

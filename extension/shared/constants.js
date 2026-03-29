@@ -1,4 +1,4 @@
-let shouldLog = true;
+let SHOULD_LOG = true;
 
 let OVERRIDE_OPTIONS =
 {
@@ -13,7 +13,7 @@ let STORAGE_KEYS =
 	OVERRIDE_OPTION: "overrideOption"
 };
 
-let defaultOverride = OVERRIDE_OPTIONS.COUNTRY_ONLY;
+let DEFAULT_OVERRIDE = OVERRIDE_OPTIONS.COUNTRY_ONLY;
 
 let MESSAGE_TYPES =
 {

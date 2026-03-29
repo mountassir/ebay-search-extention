@@ -4,7 +4,7 @@ function setOverrideOption(overrideOption)
 {
 	if (!isOverrideOptionValid(overrideOption)) 
 	{
-		overrideOption = defaultOverride;
+		overrideOption = DEFAULT_OVERRIDE;
 
 		saveOverrideOptionToStorage(overrideOption, function(){
 			log("Override option set to default: " + overrideOption);

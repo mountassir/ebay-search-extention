@@ -8,7 +8,7 @@ function isOverrideOptionValid(option)
 
 function log(message, messageType)
 {
-	if(shouldLog === true) 
+	if(SHOULD_LOG === true) 
 	{
 		switch(messageType)
 		{

@@ -1,6 +1,9 @@
 
-importScripts('../shared/utils.js');
-importScripts('../shared/constants.js');
+if (typeof importScripts === 'function') 
+{
+	importScripts('../shared/utils.js');
+	importScripts('../shared/constants.js');
+}
 
 log("Event page loaded.", MESSAGE_TYPES.DEBUG);
 
@@ -18,8 +21,8 @@ function initOptions()
 	getOverrideOptionFromStorage(function(currentOverrideOption) {
 		if(!isOverrideOptionValid(currentOverrideOption))
 		{
-			saveOverrideOptionToStorage(defaultOverride, function(){
-				log("Override option set to default: " + defaultOverride);
+			saveOverrideOptionToStorage(DEFAULT_OVERRIDE, function(){
+				log("Override option set to default: " + DEFAULT_OVERRIDE);
 			});
 		}
 	});

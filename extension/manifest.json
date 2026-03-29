@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "name": "eBay item location - My country only",
-  "author": "Mountassir El Hafi : mountassirhafi@gmail.com",
+  "author": "Mountassir : mountassirhafi@gmail.com",
   "homepage_url": "https://github.com/mountassir/ebay-search-extention",
-  "version": "1.1.16",
+  "version": "1.1.17",
 
   "description": "Always start your eBay search for items in your country location only.",
   "icons": {
@@ -28,7 +28,8 @@
   },
 
   "background": {
-    "service_worker": "main/eventPage.js"
+    "service_worker": "main/eventPage.js",
+    "scripts": ["shared/constants.js", "shared/utils.js", "main/eventPage.js"]
   },
 
   "options_ui": {
@@ -39,6 +40,13 @@
     "webNavigation",
     "storage"
   ],
-  "incognito": "split",
-  "minimum_chrome_version" : "88"
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "ebayextension@mountassirhafi.com",
+      "strict_min_version": "130.0"
+    }
+  },
+
+  "minimum_chrome_version" : "120"
 }
